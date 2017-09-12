@@ -41,6 +41,11 @@ export default {
     },
     created () {
         this.selected = this.$route.matched[0].path;
+    },
+    watch: {
+        $route (to, from, next) {
+            this.selected = to.matched[0].path;
+        }
     }
 };
 </script>

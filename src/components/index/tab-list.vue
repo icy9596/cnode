@@ -5,14 +5,14 @@
             :infinite-scroll-distance="100"
             :infinite-scroll-immediate-check="true"
         >
-            <li class="list-item" v-for="(item, index) in contentList" :key="index">
+            <router-link tag="li" :to="'/topic/' + item.id" class="list-item" v-for="(item, index) in contentList" :key="index">
                 <div class="top">
                     <div class="avatar">
                         <img :src="item.author.avatar_url">
                     </div>
                     <div class="info">
                         <div class="name">{{item.author.loginname}}</div>
-                        <time class="date">{{item.create_at | dataFormat}}</time>
+                        <time class="date">{{item.create_at | dateFormat}}</time>
                         <span class="tag" v-if="item.tab">#{{tabFormat(item.tab)}}#</span>
                     </div>
                 </div>
@@ -27,10 +27,10 @@
                         {{item.reply_count}}
                     </div>
                     <div class="last_reply" v-if="item.last_reply_at">
-                        {{item.last_reply_at | dataFormat}}
+                        {{item.last_reply_at | dateFormat}}
                     </div>
                 </div>
-            </li>
+            </router-link>
         </ul>
         <div class="loading-wrap" v-show="loading">
             <loading></loading>
@@ -45,7 +45,7 @@ import loading from 'components/index/loading';
 
 const LIMIT_LENGTH = 20;
 
-Vue.filter('dataFormat', (date) => {
+Vue.filter('dateFormat', (date) => {
     let oldDate = new Date(date);
     let nowDate = new Date();
     let diff = nowDate - oldDate;

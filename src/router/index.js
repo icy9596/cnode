@@ -8,6 +8,10 @@ import issue from 'components/issue/issue';
 import message from 'components/message/message';
 import home from 'components/home/home';
 
+import topic from 'components/topic/topic';
+import about from 'components/about';
+import login from 'components/login';
+
 Vue.use(Router);
 
 let routes = [
@@ -40,6 +44,18 @@ let routes = [
   {
     path: '/home',
     component: home
+  },
+  {
+    path: '/topic/:id',
+    component: topic
+  },
+  {
+    path: '/about',
+    component: about
+  },
+  {
+    path: '/login',
+    component: login
   }
 ];
 

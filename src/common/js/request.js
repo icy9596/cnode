@@ -9,4 +9,10 @@ function getTopics (options) {
     });
 }
 
-export { getTopics };
+function getTopicDetail (id, options) {
+    return axios.get(`/topic/${id}`, {
+        params: options
+    });
+}
+
+export { getTopics, getTopicDetail };
