@@ -52,6 +52,7 @@ import { getTopicDetail } from 'common/js/request.js';
 import { Header } from 'mint-ui';
 import author from 'components/author';
 import loading from 'components/index/loading';
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
     data () {
@@ -60,6 +61,9 @@ export default {
             loading: false
         };
     },
+    computed: {
+        ...mapGetters(['topicId'])
+    },
     methods: {
         _getTopicDetail () {
             let id = this.$route.params.id;
@@ -67,6 +71,7 @@ export default {
                 mdrender: true
             };
             this.loading = true;
+            this.updateTopicId(id);
             getTopicDetail(id, options).then(res => {
                 this.topicData = res.data.data;
                 this.loading = false;
@@ -74,7 +79,8 @@ export default {
         },
         back () {
             this.$router.go(-1);
-        }
+        },
+        ...mapMutations(['updateTopicId'])
     },
     components: {
         'm-header': Header,
@@ -83,6 +89,15 @@ export default {
     },
     created () {
         this._getTopicDetail();
+    },
+    beforeRouteEnter (to, from, next) {
+        next(vm => {
+            let id = to.params.id;
+            if (vm.topicId !== id) {
+                vm.topicData = {};
+                vm._getTopicDetail();
+            }
+        });
     }
 };
 </script>
@@ -202,6 +217,14 @@ export default {
                             word-break: break-all
                         img
                             width 100%
+                        .prettyprint
+                            padding: 10px
+                            font-size: 16px
+                            line-height: 22px
+                            color: #24292e
+                            border-radius: 4px
+                            overflow: auto
+                            background-color: #f6f8fa
                     .click
                         text-align right
                         font-size 0

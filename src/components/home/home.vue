@@ -2,7 +2,7 @@
     <div class="home">
         <m-header title="个人中心" fixed class="header"></m-header>
         <div class="user-bg"></div>
-        <div class="user">
+        <div class="user" @click="login">
             <div class="user-avatar"></div>
             <div class="text">你还没有登陆，请先登录！</div>
         </div>
@@ -32,6 +32,11 @@
 import { Header } from 'mint-ui';
 
 export default {
+    methods: {
+        login () {
+            this.$router.push('/login');
+        }
+    },
     components: {
         'm-header': Header
     }

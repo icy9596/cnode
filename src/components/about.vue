@@ -60,6 +60,9 @@ export default {
             }
             pArr[i].innerHTML = str;
         }
+    },
+    deactivated () {
+        this.$destroy();
     }
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
     <m-tabbar v-model="selected" class="tabbar" :fixed="true">
-        <m-tabitem id="/index" @click.native="changeRouter">
+        <m-tabitem :id="index()" @click.native="changeRouter">
             <i class="icon-shouye" slot="icon"></i>
             首页
         </m-tabitem>
@@ -21,11 +21,12 @@
 
 <script>
 import { Tabbar, TabItem } from 'mint-ui';
+import { mapGetters } from 'vuex';
 
 export default {
     data () {
         return {
-            selected: '/index'
+            selected: ''
         };
     },
     methods: {
@@ -33,18 +34,25 @@ export default {
             this.$router.push({
                 path: this.selected
             });
+        },
+        // 如果indexPath为空 点击首页时跳转/index/all
+        index () {
+            return this.indexPath || '/index/all';
         }
+    },
+    computed: {
+        ...mapGetters(['indexPath'])
     },
     components: {
         'm-tabbar': Tabbar,
         'm-tabitem': TabItem
     },
     created () {
-        this.selected = this.$route.matched[0].path;
+        this.selected = this.$route.fullPath;
     },
     watch: {
-        $route (to, from, next) {
-            this.selected = to.matched[0].path;
+        $route () {
+            this.selected = this.$route.fullPath;
         }
     }
 };

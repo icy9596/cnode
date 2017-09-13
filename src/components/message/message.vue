@@ -5,7 +5,11 @@
 </template>
 
 <script>
-    export default {};
+    export default {
+        deactivated () {
+            this.$destroy();
+        }
+    };
 </script>
 
 <style lang="stylus" scoped>

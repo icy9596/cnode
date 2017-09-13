@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import store from '../store/index.js';
 
 import index from 'components/index/index';
 import tabList from 'components/index/tab-list';
@@ -35,11 +36,17 @@ let routes = [
   },
   {
     path: '/issue',
-    component: issue
+    component: issue,
+    meta: {
+      requireAuth: true
+    }
   },
   {
     path: '/message',
-    component: message
+    component: message,
+    meta: {
+      requireAuth: true
+    }
   },
   {
     path: '/home',
@@ -59,6 +66,24 @@ let routes = [
   }
 ];
 
-export default new Router({
+let router = new Router({
   routes
 });
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requireAuth) {
+    if (store.state.token) {
+      next();
+    } else {
+      next({
+        path: '/login',
+        query: {
+          redirect: to.fullPath
+        }
+      });
+    }
+  }
+  next();
+});
+
+export default router;
