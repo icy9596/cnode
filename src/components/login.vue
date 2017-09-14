@@ -34,12 +34,14 @@ export default {
                     let data = res.data;
                     if (data.success === true) {
                         this.login(token);
-                        this.addUser({
+                        let user = {
                             avatar_url: data.avatar_url,
                             loginname: data.loginname,
                             id: data.id
-                        });
+                        };
+                        this.addUser(user);
                         window.localStorage.setItem('_token', token);
+                        window.localStorage.setItem('_user', JSON.stringify(user));
                         this.token = '';
                         this.$router.push(this.$route.query.redirect || '/home');
                         Toast({

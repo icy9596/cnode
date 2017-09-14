@@ -17,6 +17,13 @@ import { Toast } from 'mint-ui';
 
 Vue.use(Router);
 
+if (window.localStorage.getItem('_token')) {
+  let token = window.localStorage.getItem('_token');
+  let user = JSON.parse(window.localStorage.getItem('_user'));
+  store.commit('login', token);
+  store.commit('addUser', user);
+};
+
 let routes = [
   {
     path: '/',
