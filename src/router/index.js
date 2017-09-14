@@ -13,6 +13,8 @@ import topic from 'components/topic/topic';
 import about from 'components/about';
 import login from 'components/login';
 
+import { Toast } from 'mint-ui';
+
 Vue.use(Router);
 
 let routes = [
@@ -75,6 +77,10 @@ router.beforeEach((to, from, next) => {
     if (store.state.token) {
       next();
     } else {
+      Toast({
+        message: '请先登录',
+        duration: 2000
+      });
       next({
         path: '/login',
         query: {

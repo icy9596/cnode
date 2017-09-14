@@ -7,6 +7,9 @@ let getters = {
     },
     indexPath (state) {
         return state.indexPath;
+    },
+    user (state) {
+        return state.user;
     }
 };
 

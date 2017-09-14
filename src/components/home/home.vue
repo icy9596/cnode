@@ -3,8 +3,11 @@
         <m-header title="个人中心" fixed class="header"></m-header>
         <div class="user-bg"></div>
         <div class="user" @click="login">
-            <div class="user-avatar"></div>
-            <div class="text">你还没有登陆，请先登录！</div>
+            <div class="user-avatar">
+                <img :src="user.avatar_url">
+            </div>
+            <div class="text" v-if="!token">你还没有登陆，请先登录！</div>
+            <div class="login-in" v-if="token">{{user.loginname}}</div>
         </div>
         <div class="nav">
             <ul>
@@ -25,17 +28,23 @@
                 </router-link>
             </ul>
         </div>
+        <div class="logout" @click="logout" v-if="token">退出登录</div>
     </div>
 </template>
 
 <script>
 import { Header } from 'mint-ui';
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
     methods: {
         login () {
             this.$router.push('/login');
-        }
+        },
+        ...mapMutations(['logout'])
+    },
+    computed: {
+        ...mapGetters(['user', 'token'])
     },
     components: {
         'm-header': Header
@@ -46,7 +55,7 @@ export default {
 <style lang="stylus" scoped>
     .home
         width 100%
-        padding 50px 0 0 0
+        padding 50px 0 59px 0
         .header
             height 50px
             font-size 16px
@@ -71,10 +80,16 @@ export default {
                 background-color #eeeeee
                 border 1px solid #ccc
                 border-radius 50%
+                overflow hidden
                 margin-bottom 20px
+                img
+                    width 100%
             .text
                 font-size 14px
                 color green
+            .login-in
+                font-size 18px
+                color #000
         .nav
             .nav-item
                 display flex
@@ -94,4 +109,10 @@ export default {
                 .icon-xiayibu
                     flex 1
                     text-align right
+        .logout
+            text-align center
+            font-size 18px
+            color red
+            line-height 50px
+            border-bottom 1px solid #ccc
 </style>

@@ -8,7 +8,7 @@
             <router-link tag="li" :to="'/topic/' + item.id" class="list-item" v-for="(item, index) in contentList" :key="index">
                 <div class="top">
                     <div class="avatar">
-                        <img :src="item.author.avatar_url">
+                        <img v-lazy="item.author.avatar_url">
                     </div>
                     <div class="info">
                         <div class="name">{{item.author.loginname}}</div>

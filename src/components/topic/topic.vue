@@ -35,7 +35,7 @@
                     ></author>
                     <div class="text" v-html="item.content"></div>
                     <div class="click">
-                        <span><i class="icon-zan"></i></span>
+                        <span class="zan" :class="{'is-uped': item.is_uped}" @click="_replyUps(item)"><i class="icon-zan"></i>{{item.ups.length ? item.ups.length : ''}}</span>
                         <span><i class="icon-fenxiang"></i></span>
                     </div>
                 </li>
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { getTopicDetail } from 'common/js/request.js';
+import { getTopicDetail, replyUps } from 'common/js/request.js';
 import { Header } from 'mint-ui';
 import author from 'components/author';
 import loading from 'components/index/loading';
@@ -62,13 +62,14 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['topicId'])
+        ...mapGetters(['topicId', 'token'])
     },
     methods: {
         _getTopicDetail () {
             let id = this.$route.params.id;
             let options = {
-                mdrender: true
+                mdrender: true,
+                accesstoken: this.token
             };
             this.loading = true;
             this.updateTopicId(id);
@@ -76,6 +77,29 @@ export default {
                 this.topicData = res.data.data;
                 this.loading = false;
             });
+        },
+        _replyUps (item) {
+            let token = this.token;
+            if (token === '') {
+                this.$router.push({
+                    path: '/login',
+                    query: {
+                        redirect: `/topic/${this.topicData.id}`
+                    }
+                });
+            } else {
+                replyUps(item.id, token).then(res => {
+                    let data = res.data;
+                    if (data.success) {
+                        item.is_uped = !item.is_uped;
+                        if (data.action === 'up') {
+                            item.ups.push('user');
+                        } else if (data.action === 'down') {
+                            item.ups.pop();
+                        }
+                    }
+                });
+            }
         },
         back () {
             this.$router.go(-1);
@@ -89,6 +113,11 @@ export default {
     },
     created () {
         this._getTopicDetail();
+    },
+    watch: {
+        token () {
+            this._getTopicDetail();
+        }
     },
     beforeRouteEnter (to, from, next) {
         next(vm => {
@@ -212,6 +241,7 @@ export default {
                         p
                             font-size 16px
                             line-height 24px
+                            word-break break-all
                         a
                             color #0366d6
                             word-break: break-all
@@ -228,9 +258,14 @@ export default {
                     .click
                         text-align right
                         font-size 0
-                        [class^="icon"]
+                        [class^="icon"], .zan
                             padding 5px
                             font-size 20px
+                        .zan
+                            &.is-uped
+                                color green
+                                .icon-zan
+                                    color green
         .loading-wrap
             position absolute
             top 50%

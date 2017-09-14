@@ -6,20 +6,65 @@
             </div>
         </m-header>
         <div class="form-wrap">
-            <input class="token" type="text" placeholder="请输入Access Token">
-            <a class="btn">登录</a>
+            <input class="token" type="text" placeholder="请输入Access Token" v-model="token">
+            <a class="btn" @click="loginUser">登录</a>
         </div>
      </div>
 </template>
 
 <script>
-import { Button, Header } from 'mint-ui';
+import { Button, Header, Toast } from 'mint-ui';
+import { loginToken } from 'common/js/request.js';
+import { mapMutations } from 'vuex';
 
 export default {
+    data () {
+        return {
+            token: ''
+        };
+    },
     methods: {
         back () {
             this.$router.go(-1);
-        }
+        },
+        loginUser () {
+            let token = this.token;
+            loginToken(token).then(res => {
+                if (res.status === 200) {
+                    let data = res.data;
+                    if (data.success === true) {
+                        this.login(token);
+                        this.addUser({
+                            avatar_url: data.avatar_url,
+                            loginname: data.loginname,
+                            id: data.id
+                        });
+                        window.localStorage.setItem('_token', token);
+                        this.token = '';
+                        this.$router.push(this.$route.query.redirect || '/home');
+                        Toast({
+                            message: '登录成功!',
+                            duration: 2000
+                        });
+                    }
+                }
+            }).catch(err => {
+                if (err.response) {
+                    Toast({
+                        message: err.response.data.error_msg,
+                        duration: 2000
+                    });
+                } else {
+                    Toast({
+                        message: '错误',
+                        duration: 2000
+                    });
+                }
+
+                this.token = '';
+            });
+        },
+        ...mapMutations(['login', 'addUser'])
     },
     components: {
         'm-button': Button,

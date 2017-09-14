@@ -5,8 +5,11 @@ import App from './App';
 import router from './router';
 import store from './store/index.js';
 
+import VueLazyLoad from 'vue-lazyload';
+
 import { InfiniteScroll } from 'mint-ui';
 Vue.use(InfiniteScroll);
+Vue.use(VueLazyLoad);
 
 Vue.config.productionTip = false;
 

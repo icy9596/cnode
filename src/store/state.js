@@ -1,7 +1,8 @@
 let state = {
     topicId: '',
     token: '',
-    indexPath: ''
+    indexPath: '',
+    user: {}
 };
 
 export default state;

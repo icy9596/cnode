@@ -8,10 +8,15 @@ let mutations = {
         state.token = token;
     },
     [types.LOGOUT] (state) {
+        if (state.token === '') return;
         state.token = '';
+        state.user = {};
     },
     [types.RECORDPATH] (state, path) {
         state.indexPath = path;
+    },
+    [types.ADD_USER] (state, user) {
+        state.user = user;
     }
 };
 

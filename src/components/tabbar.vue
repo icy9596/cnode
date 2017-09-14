@@ -61,6 +61,7 @@ export default {
 <style lang="stylus" scoped>
     .tabbar
         background-image: none;
+        z-index 99
         .mint-tab-item.is-selected
             background-color #fff
             color: green
