@@ -44,4 +44,8 @@ function issueTopics (data) {
     });
 }
 
-export { getTopics, getTopicDetail, loginToken, replyUps, getMessage, issueTopics };
+function submitReplies (topicid, data) {
+    return axios.post(`/topic/${topicid}/replies`, data);
+}
+
+export { getTopics, getTopicDetail, loginToken, replyUps, getMessage, issueTopics, submitReplies };

@@ -40,6 +40,13 @@
                     </div>
                 </li>
             </ul>
+            <div class="reply-no-login" v-if="!token">
+                <p>您还未登录，请先<router-link :to="{path: '/login', query: {redirect: $route.fullPath}}" replace class="login-btn">登录！</router-link></p>
+            </div>
+            <div class="reply-islogin" v-if="token">
+                <textarea class="reply-content" placeholder="发表评论..." v-model="content"></textarea>
+                <button class="submit" @click="_submitReplies">回复</button>
+            </div>
         </div>
         <div class="loading-wrap" v-if="loading">
             <loading></loading>
@@ -48,8 +55,8 @@
 </template>
 
 <script>
-import { getTopicDetail, replyUps } from 'common/js/request.js';
-import { Header } from 'mint-ui';
+import { getTopicDetail, replyUps, submitReplies } from 'common/js/request.js';
+import { Header, Toast } from 'mint-ui';
 import author from 'components/author';
 import loading from 'components/index/loading';
 import { mapMutations, mapGetters } from 'vuex';
@@ -58,11 +65,12 @@ export default {
     data () {
         return {
             topicData: {},
-            loading: false
+            loading: false,
+            content: ''
         };
     },
     computed: {
-        ...mapGetters(['topicId', 'token'])
+        ...mapGetters(['topicId', 'token', 'user'])
     },
     methods: {
         _getTopicDetail () {
@@ -81,7 +89,7 @@ export default {
         _replyUps (item) {
             let token = this.token;
             if (token === '') {
-                this.$router.push({
+                this.$router.replace({
                     path: '/login',
                     query: {
                         redirect: `/topic/${this.topicData.id}`
@@ -98,11 +106,42 @@ export default {
                             item.ups.pop();
                         }
                     }
+                }).catch(err => {
+                    if (err.response) {
+                        Toast(err.response.data.error_msg);
+                    }
                 });
             }
         },
+        _submitReplies () {
+            let tid = this.$route.params.id;
+            let data = {
+                accesstoken: this.token,
+                content: this.content,
+                reply_id: this.reply_id || ''
+            };
+            submitReplies(tid, data).then(res => {
+                if (res.data.success) {
+                    let author = {
+                        avatar_url: this.user.avatar_url,
+                        loginname: this.user.loginname
+                    };
+                    let createAt = new Date().toUTCString();
+                    this.topicData.replies.push({
+                        author: author,
+                        content: this.content,
+                        create_at: createAt,
+                        id: res.data.reply_id,
+                        reply_id: null,
+                        ups: []
+                    });
+                    Toast('评论成功');
+                    this.content = '';
+                }
+            });
+        },
         back () {
-            this.$router.go(-1);
+            this.$router.back();
         },
         ...mapMutations(['updateTopicId'])
     },
@@ -192,6 +231,7 @@ export default {
                         line-height 22px
                         list-style disc inside
                 a
+                    word-break break-all
                     color #0366d6
                 blockquote
                     padding-left 20px
@@ -266,6 +306,35 @@ export default {
                                 color green
                                 .icon-zan
                                     color green
+            .reply-no-login
+                height 200px
+                font-size 16px
+                line-height 200px
+                text-align center
+                .login-btn
+                    color green
+            .reply-islogin
+                margin 20px 0
+                text-align right
+                .reply-content
+                    display block
+                    width 100%
+                    height 100px
+                    padding 10px
+                    margin-bottom 10px
+                    font-size 16px
+                    border 1px solid #ddd
+                    box-sizing border-box
+                    resize none
+                    outline none
+                .submit
+                    width 80px
+                    height 30px
+                    font-size 14px
+                    line-height 14px
+                    border none 
+                    color #fff
+                    background-color green
         .loading-wrap
             position absolute
             top 50%

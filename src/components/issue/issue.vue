@@ -56,6 +56,9 @@ export default {
             };
             issueTopics(data).then(res => {
                 if (res.data.success) {
+                    this.title = '';
+                    this.content = '';
+                    this.tab = '';
                     Toast('发表成功!');
                 }
             }).catch(err => {

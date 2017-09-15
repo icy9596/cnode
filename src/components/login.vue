@@ -6,7 +6,7 @@
             </div>
         </m-header>
         <div class="form-wrap">
-            <input class="token" type="text" placeholder="请输入Access Token" v-model="token">
+            <input class="token" type="text" placeholder="请输入Access Token" v-model="token"> 
             <a class="btn" @click="loginUser">登录</a>
         </div>
      </div>
@@ -25,7 +25,7 @@ export default {
     },
     methods: {
         back () {
-            this.$router.go(-1);
+            this.$router.back();
         },
         loginUser () {
             let token = this.token;
@@ -57,6 +57,7 @@ export default {
                         duration: 2000
                     });
                 } else {
+                    alert(err);
                     Toast({
                         message: '错误',
                         duration: 2000
