@@ -155,6 +155,7 @@ export default {
     },
     watch: {
         token () {
+            if (!this.$route.params.id) return;
             this._getTopicDetail();
         }
     },
