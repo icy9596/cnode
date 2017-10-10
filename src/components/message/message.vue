@@ -2,9 +2,20 @@
     <div class="message">
         <m-header title="消息" fixed class="header"></m-header>
         <div class="has-read" v-if="has_read_messages.length">
-            <h2>{{has_read_messages.length + '条信息'}}</h2>
+            <h2>{{has_read_messages.length + '条已读信息'}}</h2>
             <ul class="mess-list">
-                <li class="mess-item" v-for="(item,index) in has_read_messages" :key="item.id">{{`第${index}条消息${item.id}`}}</li>
+                <li class="mess-item" v-for="(item,index) in has_read_messages" :key="item.id">
+                    <div class="top">
+                        <div class="avata">
+                            <img :src="item.author.avatar_url">
+                        </div>
+                        <div class="info">
+                            <span class="user-name">{{item.author.loginname}}</span><span class="date">{{item.create_at | dateFormat}}</span>
+                            <div class="text">回复了您的话题<span class="topic">{{item.topic.title}}</span></div>
+                        </div>
+                    </div>
+                    <div class="content" v-html="item.reply.content"></div>
+                </li>
             </ul>
         </div>
         <div class="hasnot-read" v-if="hasnot_read_messages.length">
@@ -96,7 +107,7 @@ export default {
             left 50%
             top 50%
             transform translate(-50%,-50%)
-        .hasnot-read
+        .hasnot-read, .has-read
             h2
                 margin-top 10px
                 padding-left 10px
